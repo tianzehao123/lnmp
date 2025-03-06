@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "8082:80"
+    volumes:
+      - ../laravel-dev:/var/www/html
+    depends_on:
+      - php
+      - mysql
+      - redis
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: owl-admin
+      MYSQL_USER: owl-admin
+      MYSQL_PASSWORD: 12345678
+    ports:
+      - "33062:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+  redis:
+    image: redis:6.0
+    ports:
+      - "63792:6379"
+    volumes:
+      - redis_data:/data
+  php:
+    build: ./php
+    volumes:
+      - ../laravel-dev:/var/www/html
+    depends_on:
+      - redis
+      - mysql
+
+volumes:
+  mysql_data:
+  redis_data:
